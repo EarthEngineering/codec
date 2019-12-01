@@ -7,7 +7,7 @@ const TESTNET_PREFIX: &str = "earthtest";
 const REGNET_PREFIX: &str = "earthreg";
 
 // The earthaddr character set for encoding
-const CHARSET: &[u8; 32] = b"qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+const CHARSET: &[u8; 32] = b"epzry9x8gf2tvdw0s3jn54khcq6mua7l";
 
 // The earthaddr character set for decoding
 #[rustfmt::skip]

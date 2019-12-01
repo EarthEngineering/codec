@@ -4,12 +4,10 @@ fn main() {
     better_panic::install();
 
     // first encode an Address
-    let body: Vec<u8> = vec![
-        124, 113, 208, 77, 64, 233, 19, 64, 70, 249, 49, 104, 37, 105, 45, 29, 134, 83, 167, 5,
-    ];
+    let body: Vec<u8> = vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
     let scheme: Scheme = Scheme::Earth;
-    let hash_type: HashType = HashType::Script;
+    let hash_type: HashType = HashType::Key;
     let network: Network = Network::Main;
     let addr: Address = Address::new(body, scheme, hash_type, network);
     println!("{:#?}", addr);
