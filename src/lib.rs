@@ -40,7 +40,7 @@ pub use earth::EarthCodec;
 pub use earth_errors::EarthError;
 pub use errors::*;
 
-/// Bitcoin Networks
+/// EARTH Networks
 #[derive(PartialEq, Clone, Debug)]
 pub enum Network {
     /// Main network
@@ -78,13 +78,13 @@ pub enum HashType {
 #[derive(PartialEq, Clone, Debug)]
 pub struct Address {
     /// Address bytes
-    pub body: Vec<u8>,
+    body: Vec<u8>,
     /// Encoding scheme
-    pub scheme: Scheme,
+    scheme: Scheme,
     /// Hash type
-    pub hash_type: HashType,
+    hash_type: HashType,
     /// Network
-    pub network: Network,
+    network: Network,
 }
 
 /// Creates an empty `Address` struct, with the `body` bytes the empty vector,
@@ -147,9 +147,12 @@ impl Address {
     }
 
     /// Attempt to convert an address string into bytes
-    pub fn decode(addr_str: &str) -> Result<Self, (CashAddrError, Base58Error)> {
+    pub fn decode(addr_str: &str) -> Result<Self, (CashAddrError, EarthError, Base58Error)> {
         CashAddrCodec::decode(addr_str).or_else(|cash_err| {
-            Base58Codec::decode(addr_str).map_err(|base58_err| (cash_err, base58_err))
+            EarthCodec::decode(addr_str).or_else(|earth_err| {
+                Base58Codec::decode(addr_str)
+                    .map_err(|base58_err| (cash_err, earth_err, base58_err))
+            })
         })
     }
 }

@@ -1,4 +1,5 @@
 use super::*;
+use std::str::Chars;
 
 // Prefixes
 const MAINNET_PREFIX: &str = "earth";
@@ -120,13 +121,13 @@ impl AddressCodec for EarthCodec {
     type Error = EarthError;
     fn encode(raw: &[u8], hash_type: HashType, network: Network) -> Result<String, Self::Error> {
         // Calculate version byte
-        let hash_flag = match hash_type {
+        let hash_flag: u8 = match hash_type {
             HashType::Key => version_byte_flags::TYPE_P2PKH,
             HashType::Script => version_byte_flags::TYPE_P2SH,
             HashType::Account => version_byte_flags::TYPE_P2PKH,
         };
-        let length = raw.len();
-        let version_byte = match length {
+        let length: usize = raw.len();
+        let version_byte: u8 = match length {
             20 => version_byte_flags::SIZE_160,
             24 => version_byte_flags::SIZE_192,
             28 => version_byte_flags::SIZE_224,
@@ -139,17 +140,17 @@ impl AddressCodec for EarthCodec {
         } | hash_flag;
 
         // Get prefix
-        let prefix = match network {
+        let prefix: &str = match network {
             Network::Main => MAINNET_PREFIX,
             Network::Test => TESTNET_PREFIX,
             Network::Regtest => REGNET_PREFIX,
         };
 
         // Convert payload to 5 bit array
-        let mut payload = Vec::with_capacity(1 + raw.len());
+        let mut payload: Vec<u8> = Vec::with_capacity(1 + raw.len());
         payload.push(version_byte);
         payload.extend(raw);
-        let payload_5_bits = convert_bits(&payload, 8, 5, true);
+        let payload_5_bits: Vec<u8> = convert_bits(&payload, 8, 5, true);
 
         // Construct payload string using CHARSET
         let payload_str: String = payload_5_bits
@@ -158,9 +159,9 @@ impl AddressCodec for EarthCodec {
             .collect();
 
         // Create checksum
-        let expanded_prefix = expand_prefix(prefix);
-        let checksum_input = [&expanded_prefix[..], &payload_5_bits, &[0; 8][..]].concat();
-        let checksum = polymod(&checksum_input);
+        let expanded_prefix: Vec<u8> = expand_prefix(prefix);
+        let checksum_input: Vec<u8> = [&expanded_prefix[..], &payload_5_bits, &[0; 8][..]].concat();
+        let checksum: u64 = polymod(&checksum_input);
 
         // Convert checksum to string
         let checksum_str: String = (0..8)
@@ -169,7 +170,7 @@ impl AddressCodec for EarthCodec {
             .collect();
 
         // Concatentate all parts
-        let earthaddr = [prefix, ":", &payload_str, &checksum_str].concat();
+        let earthaddr: String = [prefix, ":", &payload_str, &checksum_str].concat();
         Ok(earthaddr)
     }
 
@@ -179,11 +180,11 @@ impl AddressCodec for EarthCodec {
         if parts.len() != 2 {
             return Err(EarthError::NoPrefix.into());
         }
-        let prefix = parts[0];
-        let payload_str = parts[1];
+        let prefix: &str = parts[0];
+        let payload_str: &str = parts[1];
 
         // Match network
-        let network = match prefix {
+        let network: Network = match prefix {
             MAINNET_PREFIX => Network::Main,
             TESTNET_PREFIX => Network::Test,
             REGNET_PREFIX => Network::Regtest,
@@ -205,7 +206,7 @@ impl AddressCodec for EarthCodec {
         }
 
         // Decode payload to 5 bit array
-        let payload_chars = payload_str.chars(); // Reintialize iterator here
+        let payload_chars: Chars<'_> = payload_str.chars(); // Reintialize iterator here
         let payload_5_bits: Result<Vec<u8>, EarthError> = payload_chars
             .map(|c| {
                 let i = c as usize;
@@ -216,25 +217,25 @@ impl AddressCodec for EarthCodec {
                 }
             })
             .collect();
-        let payload_5_bits = payload_5_bits?;
+        let payload_5_bits: Vec<u8> = payload_5_bits?;
 
         // Verify the checksum
-        let checksum = polymod(&[&expand_prefix(prefix), &payload_5_bits[..]].concat());
+        let checksum: u64 = polymod(&[&expand_prefix(prefix), &payload_5_bits[..]].concat());
         if checksum != 0 {
             return Err(EarthError::ChecksumFailed(checksum).into());
         }
 
         // Convert from 5 bit array to byte array
-        let len_5_bit = payload_5_bits.len();
-        let payload = convert_bits(&payload_5_bits[..(len_5_bit - 8)], 5, 8, false);
+        let len_5_bit: usize = payload_5_bits.len();
+        let payload: Vec<u8> = convert_bits(&payload_5_bits[..(len_5_bit - 8)], 5, 8, false);
 
         // Verify the version byte
-        let version = payload[0];
+        let version: u8 = payload[0];
 
         // Check length
-        let body = &payload[1..];
-        let body_len = body.len();
-        let version_size = version & version_byte_flags::SIZE_MASK;
+        let body: &[u8] = &payload[1..];
+        let body_len: usize = body.len();
+        let version_size: u8 = version & version_byte_flags::SIZE_MASK;
         if (version_size == version_byte_flags::SIZE_160 && body_len != 20)
             || (version_size == version_byte_flags::SIZE_192 && body_len != 24)
             || (version_size == version_byte_flags::SIZE_224 && body_len != 28)
@@ -248,8 +249,8 @@ impl AddressCodec for EarthCodec {
         }
 
         // Extract the hash type and return
-        let version_type = version & version_byte_flags::TYPE_MASK;
-        let hash_type = if version_type == version_byte_flags::TYPE_P2PKH {
+        let version_type: u8 = version & version_byte_flags::TYPE_MASK;
+        let hash_type: HashType = if version_type == version_byte_flags::TYPE_P2PKH {
             HashType::Key
         } else if version_type == version_byte_flags::TYPE_P2SH {
             HashType::Script
