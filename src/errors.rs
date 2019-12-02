@@ -1,4 +1,4 @@
-use crate::{CaliforniaError, EarthError, PhishError};
+use crate::{CaliforniaError, EarthError, GabrielError, PhishError};
 use std::{error::Error, fmt};
 
 /// Error concerning encoding/decoding of addresses
@@ -10,6 +10,8 @@ pub enum AddressError {
     California(CaliforniaError),
     /// Phish Address error
     Phish(PhishError),
+    /// Gabriel Address error
+    Gabriel(GabrielError),
 }
 
 impl fmt::Display for AddressError {
@@ -18,6 +20,7 @@ impl fmt::Display for AddressError {
             AddressError::Earth(ref e) => write!(f, "earth address error: {}", e),
             AddressError::California(ref e) => write!(f, "california address error: {}", e),
             AddressError::Phish(ref e) => write!(f, "phish address error: {}", e),
+            AddressError::Gabriel(ref e) => write!(f, "gabriel address error: {}", e),
         }
     }
 }
@@ -28,6 +31,7 @@ impl Error for AddressError {
             AddressError::Earth(ref e) => Some(e),
             AddressError::California(ref e) => Some(e),
             AddressError::Phish(ref e) => Some(e),
+            AddressError::Gabriel(ref e) => Some(e),
         }
     }
 
@@ -36,6 +40,7 @@ impl Error for AddressError {
             AddressError::Earth(_) => "earth address error",
             AddressError::California(_) => "california address error",
             AddressError::Phish(_) => "phish address error",
+            AddressError::Gabriel(_) => "gabriel address error",
         }
     }
 }

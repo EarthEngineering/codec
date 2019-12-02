@@ -4,7 +4,7 @@ use keyphrase::{KeyPhrase, KeyPhraseType, Language, Seed};
 fn main() {
     better_panic::install();
 
-    let scheme: Scheme = Scheme::Phish;
+    let scheme: Scheme = Scheme::Gabriel;
     let hash_type: HashType = HashType::Key;
     let network: Network = Network::Main;
     let keyphrase = KeyPhrase::new(KeyPhraseType::Words12, Language::English);

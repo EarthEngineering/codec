@@ -29,6 +29,8 @@ mod california_errors;
 mod earth;
 mod earth_errors;
 mod errors;
+mod gabriel;
+mod gabriel_errors;
 mod phish;
 mod phish_errors;
 
@@ -37,6 +39,8 @@ pub use california_errors::CaliforniaError;
 pub use earth::EarthCodec;
 pub use earth_errors::EarthError;
 pub use errors::*;
+pub use gabriel::GabrielCodec;
+pub use gabriel_errors::GabrielError;
 pub use phish::PhishCodec;
 pub use phish_errors::PhishError;
 
@@ -60,6 +64,8 @@ pub enum Scheme {
     California,
     /// Phish Address encoding
     Phish,
+    /// Gabriel Address encoding
+    Gabriel,
 }
 
 /// Intepretation of the Hash160 bytes
@@ -143,6 +149,12 @@ impl Address {
                 self.network.to_owned(),
             )
             .map_err(AddressError::Phish),
+            Scheme::Gabriel => GabrielCodec::encode(
+                &self.body,
+                self.hash_type.to_owned(),
+                self.network.to_owned(),
+            )
+            .map_err(AddressError::Gabriel),
         }
     }
 
