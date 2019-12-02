@@ -1,8 +1,14 @@
 [package]
-name = "codec"
-version = "0.1.0"
-authors = ["Gabriel Cardona <cgcardona@gmail.com>"]
+name = "earth_codec"
+version = "0.0.1"
+authors = ["Gabriel Cardona <https://www.earth.engineering/>"]
 edition = "2018"
+license = "MIT"
+homepage = "https://www.earth.engineering"
+repository = "https://github.com/EarthEngineering/codec"
+readme = "README.md"
+description = "Library for encoding and decoding EARTH addresses."
+documentation = "https://docs.rs/earth_codec"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

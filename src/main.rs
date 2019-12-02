@@ -1,4 +1,4 @@
-use codec::{Address, HashType, Network, Scheme};
+use earth_codec::{Address, HashType, Network, Scheme};
 use keyphrase::{KeyPhrase, KeyPhraseType, Language, Seed};
 
 fn main() {

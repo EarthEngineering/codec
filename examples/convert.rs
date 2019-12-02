@@ -1,4 +1,4 @@
-use codec::{Address, Network, Scheme};
+use earth_codec::{Address, Network, Scheme};
 
 fn main() {
     // Decode a base58 address

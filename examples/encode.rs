@@ -1,4 +1,4 @@
-use codec::Address;
+use earth_codec::Address;
 
 fn main() {
     // Raw hash160 bytes

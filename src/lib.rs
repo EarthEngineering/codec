@@ -4,7 +4,7 @@
 //! encoding/decoding of EARTH addresses.
 //!
 //! ```rust
-//! use codec::{Address, Network, Scheme};
+//! use earth_codec::{Address, Network, Scheme};
 //!
 //! fn main() {
 //! // Decode base58 address
@@ -78,13 +78,13 @@ pub enum HashType {
 #[derive(PartialEq, Clone, Debug)]
 pub struct Address {
     /// Address bytes
-    body: Vec<u8>,
+    pub body: Vec<u8>,
     /// Encoding scheme
-    scheme: Scheme,
+    pub scheme: Scheme,
     /// Hash type
-    hash_type: HashType,
+    pub hash_type: HashType,
     /// Network
-    network: Network,
+    pub network: Network,
 }
 
 /// Creates an empty `Address` struct, with the `body` bytes the empty vector,
