@@ -1,19 +1,27 @@
 use codec::{Address, HashType, Network, Scheme};
+use keyphrase::{KeyPhrase, KeyPhraseType, Language, Seed};
 
 fn main() {
     better_panic::install();
 
-    // first encode an Address
-    let body: Vec<u8> = vec![
-        124, 113, 208, 77, 64, 233, 19, 64, 70, 249, 49, 104, 37, 105, 45, 29, 134, 83, 167, 5,
-    ];
-
     let scheme: Scheme = Scheme::Earth;
-    let hash_type: HashType = HashType::Script;
+    let hash_type: HashType = HashType::Key;
     let network: Network = Network::Main;
+
+    let keyphrase = KeyPhrase::new(KeyPhraseType::Words12, Language::English);
+    let phrase: &str = keyphrase.phrase();
+    println!("KeyPhrase: {}", phrase);
+
+    // get the HD wallet seed
+    let seed = Seed::new(&keyphrase, "");
+    println!("Root Seed: {:X}", seed);
+    println!("----------");
+
+    // first encode an Address
+    let body: Vec<u8> = seed.as_bytes().to_vec();
+
     let addr: Address = Address::new(body, scheme, hash_type, network);
     println!("{:#?}", addr);
-
     // Decode base58 address
     // let legacy_addr: &str = "1CM18hbqJzCnM8CaxaNQHxJcnkcYbLV5Gw";
 

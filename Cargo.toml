@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 bitcoin_hashes = "0.7.1"
 better-panic = "0.2.0"
+keyphrase = "0.0.1"
 
 [dev-dependencies]
 hex = "0.3.2"
