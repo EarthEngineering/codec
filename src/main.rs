@@ -7,7 +7,6 @@ fn main() {
     let scheme: Scheme = Scheme::Earth;
     let hash_type: HashType = HashType::Key;
     let network: Network = Network::Main;
-
     let keyphrase = KeyPhrase::new(KeyPhraseType::Words12, Language::English);
     let phrase: &str = keyphrase.phrase();
     println!("KeyPhrase: {}", phrase);
@@ -22,29 +21,14 @@ fn main() {
 
     let addr: Address = Address::new(body, scheme, hash_type, network);
     println!("{:#?}", addr);
-    // Decode base58 address
-    // let legacy_addr: &str = "1CM18hbqJzCnM8CaxaNQHxJcnkcYbLV5Gw";
-
-    // Decode cash address
-    // let cash_address: &str = "bitcoincash:qp78r5zdgr53xszxlycksftf95wcv5a8q5szslvspl";
 
     // Decode earth address
-    // let earth_address: &str = "earth:qp78r5zdgr53xszxlycksftf95wcv5a8q5m7zvw2aq";
-
-    // let mut addr: Address = Address::decode(legacy_addr).unwrap();
-    // println!("{:#?}", addr);
-
-    // let mut cash_addr: Address = Address::decode(cash_address).unwrap();
-    // println!("{:#?}", addr);
+    // let earth_address: &str = "earth:er6m7j9njldwwzlg9v7v53unlr4jkmx6qy59n5mv54";
 
     // let mut earth_addr: Address = Address::decode(earth_address).unwrap();
     // println!("{:#?}", earth_addr);
 
-    // Change the base58 address to a test network earth address
-    // earth_addr.network = Network::Main;
-    // earth_addr.scheme = Scheme::Earth;
-
-    // Encode cash address
+    // Encode earth address
     let earth_address: String = addr.encode().unwrap();
 
     println!("{:#?}", earth_address);

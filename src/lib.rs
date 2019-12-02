@@ -7,9 +7,9 @@
 //! use earth_codec::{Address, Network, Scheme};
 //!
 //! fn main() {
-//! // Decode base58 address
-//! let legacy_addr: &str = "1CM18hbqJzCnM8CaxaNQHxJcnkcYbLV5Gw";
-//! let mut addr = Address::decode(legacy_addr).unwrap();
+//! // Decode earth address
+//! let earth_addr: &str = "earthtest:qp78r5zdgr53xszxlycksftf95wcv5a8q5khw5038k";
+//! let mut addr = Address::decode(earth_addr).unwrap();
 //!
 //! // Change the base58 address to a test network earth address
 //! addr.network = Network::Test;
@@ -24,18 +24,10 @@
 //! ```
 //!
 
-mod base58;
-mod base58_errors;
-mod cashaddr;
-mod cashaddr_errors;
 mod earth;
 mod earth_errors;
 mod errors;
 
-pub use base58::Base58Codec;
-pub use base58_errors::Base58Error;
-pub use cashaddr::CashAddrCodec;
-pub use cashaddr_errors::CashAddrError;
 pub use earth::EarthCodec;
 pub use earth_errors::EarthError;
 pub use errors::*;
@@ -54,10 +46,6 @@ pub enum Network {
 /// Address encoding scheme
 #[derive(PartialEq, Clone, Debug)]
 pub enum Scheme {
-    /// Base58 encoding
-    Base58,
-    /// CashAddress encoding
-    CashAddr,
     /// Earth Address encoding
     Earth,
 }
@@ -125,35 +113,18 @@ impl Address {
     /// Attempt to convert the raw address bytes to a string
     pub fn encode(&self) -> Result<String, AddressError> {
         match self.scheme {
-            Scheme::CashAddr => CashAddrCodec::encode(
-                &self.body,
-                self.hash_type.to_owned(),
-                self.network.to_owned(),
-            )
-            .map_err(AddressError::CashAddr),
             Scheme::Earth => EarthCodec::encode(
                 &self.body,
                 self.hash_type.to_owned(),
                 self.network.to_owned(),
             )
             .map_err(AddressError::Earth),
-            Scheme::Base58 => Base58Codec::encode(
-                &self.body,
-                self.hash_type.to_owned(),
-                self.network.to_owned(),
-            )
-            .map_err(AddressError::Base58),
         }
     }
 
     /// Attempt to convert an address string into bytes
-    pub fn decode(addr_str: &str) -> Result<Self, (CashAddrError, EarthError, Base58Error)> {
-        CashAddrCodec::decode(addr_str).or_else(|cash_err| {
-            EarthCodec::decode(addr_str).or_else(|earth_err| {
-                Base58Codec::decode(addr_str)
-                    .map_err(|base58_err| (cash_err, earth_err, base58_err))
-            })
-        })
+    pub fn decode(addr_str: &str) -> Result<Self, (EarthError)> {
+        EarthCodec::decode(addr_str).map_err(|earth_err| (earth_err))
     }
 }
 
