@@ -24,13 +24,21 @@
 //! ```
 //!
 
+mod california;
+mod california_errors;
 mod earth;
 mod earth_errors;
 mod errors;
+mod phish;
+mod phish_errors;
 
+pub use california::CaliforniaCodec;
+pub use california_errors::CaliforniaError;
 pub use earth::EarthCodec;
 pub use earth_errors::EarthError;
 pub use errors::*;
+pub use phish::PhishCodec;
+pub use phish_errors::PhishError;
 
 /// EARTH Networks
 #[derive(PartialEq, Clone, Debug)]
@@ -48,6 +56,10 @@ pub enum Network {
 pub enum Scheme {
     /// Earth Address encoding
     Earth,
+    /// California Address encoding
+    California,
+    /// Phish Address encoding
+    Phish,
 }
 
 /// Intepretation of the Hash160 bytes
@@ -119,6 +131,18 @@ impl Address {
                 self.network.to_owned(),
             )
             .map_err(AddressError::Earth),
+            Scheme::California => CaliforniaCodec::encode(
+                &self.body,
+                self.hash_type.to_owned(),
+                self.network.to_owned(),
+            )
+            .map_err(AddressError::California),
+            Scheme::Phish => PhishCodec::encode(
+                &self.body,
+                self.hash_type.to_owned(),
+                self.network.to_owned(),
+            )
+            .map_err(AddressError::Phish),
         }
     }
 
