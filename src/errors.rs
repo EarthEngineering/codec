@@ -1,37 +1,26 @@
-use crate::Base58Error;
-use crate::CashAddrError;
-use crate::EarthError;
+use crate::{CaliforniaError, EarthError, GabrielError, PhishError};
 use std::{error::Error, fmt};
 
 /// Error concerning encoding/decoding of addresses
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum AddressError {
-    /// Base58 address error
-    Base58(Base58Error),
-    /// CashAddr error
-    CashAddr(CashAddrError),
-    /// EarthAddr error
+    /// Earth Address error
     Earth(EarthError),
-}
-
-impl From<Base58Error> for AddressError {
-    fn from(e: Base58Error) -> AddressError {
-        AddressError::Base58(e)
-    }
-}
-
-impl From<CashAddrError> for AddressError {
-    fn from(e: CashAddrError) -> AddressError {
-        AddressError::CashAddr(e)
-    }
+    /// California Address error
+    California(CaliforniaError),
+    /// Phish Address error
+    Phish(PhishError),
+    /// Gabriel Address error
+    Gabriel(GabrielError),
 }
 
 impl fmt::Display for AddressError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            AddressError::Base58(ref e) => write!(f, "base58 error: {}", e),
-            AddressError::CashAddr(ref e) => write!(f, "cashaddr error: {}", e),
-            AddressError::Earth(ref e) => write!(f, "earthaddr error: {}", e),
+            AddressError::Earth(ref e) => write!(f, "earth address error: {}", e),
+            AddressError::California(ref e) => write!(f, "california address error: {}", e),
+            AddressError::Phish(ref e) => write!(f, "phish address error: {}", e),
+            AddressError::Gabriel(ref e) => write!(f, "gabriel address error: {}", e),
         }
     }
 }
@@ -39,17 +28,19 @@ impl fmt::Display for AddressError {
 impl Error for AddressError {
     fn cause(&self) -> Option<&dyn Error> {
         match *self {
-            AddressError::Base58(ref e) => Some(e),
-            AddressError::CashAddr(ref e) => Some(e),
             AddressError::Earth(ref e) => Some(e),
+            AddressError::California(ref e) => Some(e),
+            AddressError::Phish(ref e) => Some(e),
+            AddressError::Gabriel(ref e) => Some(e),
         }
     }
 
     fn description(&self) -> &str {
         match *self {
-            AddressError::Base58(_) => "base58 error",
-            AddressError::CashAddr(_) => "cashaddr error",
-            AddressError::Earth(_) => "earthaddr error",
+            AddressError::Earth(_) => "earth address error",
+            AddressError::California(_) => "california address error",
+            AddressError::Phish(_) => "phish address error",
+            AddressError::Gabriel(_) => "gabriel address error",
         }
     }
 }

@@ -1,14 +1,21 @@
 [package]
-name = "codec"
+name = "earth_codec"
 version = "0.1.0"
-authors = ["Gabriel Cardona <cgcardona@gmail.com>"]
+authors = ["Gabriel Cardona <https://www.earth.engineering>"]
 edition = "2018"
+license = "MIT"
+homepage = "https://www.earth.engineering"
+repository = "https://github.com/EarthEngineering/codec"
+readme = "README.md"
+description = "Library for encoding and decoding EARTH addresses."
+documentation = "https://docs.rs/earth_codec"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 bitcoin_hashes = "0.7.1"
 better-panic = "0.2.0"
+keyphrase = "0.1.4"
 
 [dev-dependencies]
 hex = "0.3.2"

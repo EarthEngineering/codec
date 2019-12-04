@@ -2,14 +2,14 @@ use super::*;
 use std::str::Chars;
 
 // Prefixes
-const MAINNET_PREFIX: &str = "earth";
-const TESTNET_PREFIX: &str = "earthtest";
-const REGNET_PREFIX: &str = "earthreg";
+const MAINNET_PREFIX: &str = "phish";
+const TESTNET_PREFIX: &str = "phishtest";
+const REGNET_PREFIX: &str = "phishreg";
 
-// The earth character set for encoding
-const CHARSET: &[u8; 32] = b"epzry9x8gf2tvdw0s3jn54khcq6mua7l";
+// The phish character set for encoding
+const CHARSET: &[u8; 32] = b"pqzry9x8gf2tvdw0s3jn54khce6mua7l";
 
-// The earth character set for decoding
+// The phish character set for decoding
 #[rustfmt::skip]
 const CHARSET_REV: [Option<u8>; 128] = [
     None,     None,     None,     None,     None,     None,     None,     None,
@@ -83,11 +83,11 @@ fn expand_prefix(prefix: &str) -> Vec<u8> {
 
 fn convert_bits(data: &[u8], inbits: u8, outbits: u8, pad: bool) -> Vec<u8> {
     assert!(inbits <= 8 && outbits <= 8);
-    let num_bytes: usize = (data.len() * inbits as usize + outbits as usize - 1) / outbits as usize;
-    let mut ret: Vec<u8> = Vec::with_capacity(num_bytes);
+    let num_bytes = (data.len() * inbits as usize + outbits as usize - 1) / outbits as usize;
+    let mut ret = Vec::with_capacity(num_bytes);
     let mut acc: u16 = 0; // accumulator of bits
     let mut num: u8 = 0; // num bits in acc
-    let groupmask: u16 = (1 << outbits) - 1;
+    let groupmask = (1 << outbits) - 1;
     for d in data.iter() {
         // We push each input chunk into a 16-bit accumulator
         acc = (acc << inbits) | u16::from(*d);
@@ -106,20 +106,19 @@ fn convert_bits(data: &[u8], inbits: u8, outbits: u8, pad: bool) -> Vec<u8> {
         }
     } else {
         // If there's some bits left, figure out if we need to remove padding and add it
-        let padding: usize = (data.len() * inbits as usize) % outbits as usize;
+        let padding = (data.len() * inbits as usize) % outbits as usize;
         if num as usize > padding {
             ret.push((acc >> padding) as u8);
         }
     }
-    // println!("{:#?}", ret);
     ret
 }
 
-/// Codec allowing the encoding and decoding of earth addresses
-pub struct EarthCodec;
+/// Codec allowing the encoding and decoding of phish addresses
+pub struct PhishCodec;
 
-impl AddressCodec for EarthCodec {
-    type Error = EarthError;
+impl AddressCodec for PhishCodec {
+    type Error = PhishError;
     fn encode(raw: &[u8], hash_type: HashType, network: Network) -> Result<String, Self::Error> {
         // Calculate version byte
         let hash_flag: u8 = match hash_type {
@@ -137,7 +136,7 @@ impl AddressCodec for EarthCodec {
             48 => version_byte_flags::SIZE_384,
             56 => version_byte_flags::SIZE_448,
             64 => version_byte_flags::SIZE_512,
-            _ => return Err(EarthError::InvalidLength(length).into()),
+            _ => return Err(PhishError::InvalidLength(length).into()),
         } | hash_flag;
 
         // Get prefix
@@ -150,10 +149,8 @@ impl AddressCodec for EarthCodec {
         // Convert payload to 5 bit array
         let mut payload: Vec<u8> = Vec::with_capacity(1 + raw.len());
         payload.push(version_byte);
-        // println!("{:#?}", payload);
         payload.extend(raw);
         let payload_5_bits: Vec<u8> = convert_bits(&payload, 8, 5, true);
-        // println!("{:#?}", payload_5_bits);
 
         // Construct payload string using CHARSET
         let payload_str: String = payload_5_bits
@@ -181,7 +178,7 @@ impl AddressCodec for EarthCodec {
         // Delimit and extract prefix
         let parts: Vec<&str> = addr_str.split(':').collect();
         if parts.len() != 2 {
-            return Err(EarthError::NoPrefix.into());
+            return Err(PhishError::NoPrefix.into());
         }
         let prefix: &str = parts[0];
         let payload_str: &str = parts[1];
@@ -191,32 +188,32 @@ impl AddressCodec for EarthCodec {
             MAINNET_PREFIX => Network::Main,
             TESTNET_PREFIX => Network::Test,
             REGNET_PREFIX => Network::Regtest,
-            _ => return Err(EarthError::InvalidPrefix(prefix.to_string()).into()),
+            _ => return Err(PhishError::InvalidPrefix(prefix.to_string()).into()),
         };
 
         // Do some sanity checks on the string
-        let mut payload_chars: Chars<'_> = payload_str.chars();
+        let mut payload_chars = payload_str.chars();
         if let Some(first_char) = payload_chars.next() {
             if first_char.is_lowercase() {
                 if payload_chars.any(|c| c.is_uppercase()) {
-                    return Err(EarthError::MixedCase.into());
+                    return Err(PhishError::MixedCase.into());
                 }
             } else if payload_chars.any(|c| c.is_lowercase()) {
-                return Err(EarthError::MixedCase.into());
+                return Err(PhishError::MixedCase.into());
             }
         } else {
-            return Err(EarthError::InvalidLength(0).into());
+            return Err(PhishError::InvalidLength(0).into());
         }
 
         // Decode payload to 5 bit array
         let payload_chars: Chars<'_> = payload_str.chars(); // Reintialize iterator here
-        let payload_5_bits: Result<Vec<u8>, EarthError> = payload_chars
+        let payload_5_bits: Result<Vec<u8>, PhishError> = payload_chars
             .map(|c| {
                 let i = c as usize;
                 if let Some(Some(d)) = CHARSET_REV.get(i) {
                     Ok(*d as u8)
                 } else {
-                    Err(EarthError::InvalidChar(c))
+                    Err(PhishError::InvalidChar(c))
                 }
             })
             .collect();
@@ -225,7 +222,7 @@ impl AddressCodec for EarthCodec {
         // Verify the checksum
         let checksum: u64 = polymod(&[&expand_prefix(prefix), &payload_5_bits[..]].concat());
         if checksum != 0 {
-            return Err(EarthError::ChecksumFailed(checksum).into());
+            return Err(PhishError::ChecksumFailed(checksum).into());
         }
 
         // Convert from 5 bit array to byte array
@@ -248,7 +245,7 @@ impl AddressCodec for EarthCodec {
             || (version_size == version_byte_flags::SIZE_448 && body_len != 56)
             || (version_size == version_byte_flags::SIZE_512 && body_len != 64)
         {
-            return Err(EarthError::InvalidLength(body_len).into());
+            return Err(PhishError::InvalidLength(body_len).into());
         }
 
         // Extract the hash type and return
@@ -258,11 +255,11 @@ impl AddressCodec for EarthCodec {
         } else if version_type == version_byte_flags::TYPE_P2SH {
             HashType::Script
         } else {
-            return Err(EarthError::InvalidVersion(version).into());
+            return Err(PhishError::InvalidVersion(version).into());
         };
 
         Ok(Address {
-            scheme: Scheme::Earth,
+            scheme: Scheme::California,
             body: body.to_vec(),
             hash_type,
             network,
@@ -272,8 +269,8 @@ impl AddressCodec for EarthCodec {
 
 #[cfg(test)]
 mod tests {
-    // use super::*;
-    // use hex;
+    use super::*;
+    use hex;
 
     // TODO - FIX THESE TESTS
     // #[test]
@@ -359,12 +356,12 @@ mod tests {
 //     );
 // }
 
-// fn verify(network: Network, data: &Vec<u8>, earthaddr: &str) {
-//     let hash_type = HashType::Key;
-//     let output = EarthCodec::encode(data, hash_type, network).unwrap();
-//     println!("{:#?}", output);
-//     assert!(output == earthaddr.to_ascii_lowercase());
-//     let decoded = EarthCodec::decode(earthaddr).unwrap();
-//     assert!(decoded.as_ref().to_vec() == *data);
-// }
+fn verify(network: Network, data: &Vec<u8>, earthaddr: &str) {
+    let hash_type = HashType::Key;
+    let output = EarthCodec::encode(data, hash_type, network).unwrap();
+    println!("{:#?}", output);
+    assert!(output == earthaddr.to_ascii_lowercase());
+    let decoded = EarthCodec::decode(earthaddr).unwrap();
+    assert!(decoded.as_ref().to_vec() == *data);
+}
 // }

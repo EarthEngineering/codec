@@ -20,10 +20,10 @@ To generate docs run the following command from within the base directory:
 
 ## Contributing
 
-First, clone [the repo](https://github.com/cgcardona/codec) and change directories to the freshly cloned code.
+First, clone [the repo](https://github.com/EarthEngineering/codec) and change directories to the freshly cloned code.
 
 ```
-git clone https://github.com/cgcardona/codec.git
+git clone https://github.com/EarthEngineering/codec.git
 cd codec/
 ```
 
@@ -33,7 +33,7 @@ Next install deps and build app
 cargo build
 ```
 
-Create a feature branch off of [stage](https://github.com/cgcardona/codec/tree/stage) and then reate a [Pull Request](https://github.com/cgcardona/codec/pulls) to merge your code back in to `stage`.
+Create a feature branch off of [stage](https://github.com/EarthEngineering/codec/tree/stage) and then reate a [Pull Request](https://github.com/EarthEngineering/codec/pulls) to merge your code back in to `stage`.
 
 ## Credit
 
