@@ -1,7 +1,7 @@
 [package]
 name = "earth_codec"
-version = "0.0.1"
-authors = ["Gabriel Cardona <https://www.earth.engineering/>"]
+version = "0.1.0"
+authors = ["Gabriel Cardona <https://www.earth.engineering>"]
 edition = "2018"
 license = "MIT"
 homepage = "https://www.earth.engineering"
@@ -15,7 +15,7 @@ documentation = "https://docs.rs/earth_codec"
 [dependencies]
 bitcoin_hashes = "0.7.1"
 better-panic = "0.2.0"
-keyphrase = "0.0.1"
+keyphrase = "0.1.4"
 
 [dev-dependencies]
 hex = "0.3.2"

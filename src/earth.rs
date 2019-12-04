@@ -83,11 +83,11 @@ fn expand_prefix(prefix: &str) -> Vec<u8> {
 
 fn convert_bits(data: &[u8], inbits: u8, outbits: u8, pad: bool) -> Vec<u8> {
     assert!(inbits <= 8 && outbits <= 8);
-    let num_bytes = (data.len() * inbits as usize + outbits as usize - 1) / outbits as usize;
-    let mut ret = Vec::with_capacity(num_bytes);
+    let num_bytes: usize = (data.len() * inbits as usize + outbits as usize - 1) / outbits as usize;
+    let mut ret: Vec<u8> = Vec::with_capacity(num_bytes);
     let mut acc: u16 = 0; // accumulator of bits
     let mut num: u8 = 0; // num bits in acc
-    let groupmask = (1 << outbits) - 1;
+    let groupmask: u16 = (1 << outbits) - 1;
     for d in data.iter() {
         // We push each input chunk into a 16-bit accumulator
         acc = (acc << inbits) | u16::from(*d);
@@ -106,11 +106,12 @@ fn convert_bits(data: &[u8], inbits: u8, outbits: u8, pad: bool) -> Vec<u8> {
         }
     } else {
         // If there's some bits left, figure out if we need to remove padding and add it
-        let padding = (data.len() * inbits as usize) % outbits as usize;
+        let padding: usize = (data.len() * inbits as usize) % outbits as usize;
         if num as usize > padding {
             ret.push((acc >> padding) as u8);
         }
     }
+    // println!("{:#?}", ret);
     ret
 }
 
@@ -149,8 +150,10 @@ impl AddressCodec for EarthCodec {
         // Convert payload to 5 bit array
         let mut payload: Vec<u8> = Vec::with_capacity(1 + raw.len());
         payload.push(version_byte);
+        // println!("{:#?}", payload);
         payload.extend(raw);
         let payload_5_bits: Vec<u8> = convert_bits(&payload, 8, 5, true);
+        // println!("{:#?}", payload_5_bits);
 
         // Construct payload string using CHARSET
         let payload_str: String = payload_5_bits
@@ -192,7 +195,7 @@ impl AddressCodec for EarthCodec {
         };
 
         // Do some sanity checks on the string
-        let mut payload_chars = payload_str.chars();
+        let mut payload_chars: Chars<'_> = payload_str.chars();
         if let Some(first_char) = payload_chars.next() {
             if first_char.is_lowercase() {
                 if payload_chars.any(|c| c.is_uppercase()) {
@@ -269,8 +272,8 @@ impl AddressCodec for EarthCodec {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use hex;
+    // use super::*;
+    // use hex;
 
     // TODO - FIX THESE TESTS
     // #[test]
@@ -356,12 +359,12 @@ mod tests {
 //     );
 // }
 
-fn verify(network: Network, data: &Vec<u8>, earthaddr: &str) {
-    let hash_type = HashType::Key;
-    let output = EarthCodec::encode(data, hash_type, network).unwrap();
-    println!("{:#?}", output);
-    assert!(output == earthaddr.to_ascii_lowercase());
-    let decoded = EarthCodec::decode(earthaddr).unwrap();
-    assert!(decoded.as_ref().to_vec() == *data);
-}
+// fn verify(network: Network, data: &Vec<u8>, earthaddr: &str) {
+//     let hash_type = HashType::Key;
+//     let output = EarthCodec::encode(data, hash_type, network).unwrap();
+//     println!("{:#?}", output);
+//     assert!(output == earthaddr.to_ascii_lowercase());
+//     let decoded = EarthCodec::decode(earthaddr).unwrap();
+//     assert!(decoded.as_ref().to_vec() == *data);
+// }
 // }

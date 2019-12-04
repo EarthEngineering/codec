@@ -45,7 +45,7 @@ pub use phish::PhishCodec;
 pub use phish_errors::PhishError;
 
 /// EARTH Networks
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug, Copy)]
 pub enum Network {
     /// Main network
     Main,
@@ -69,7 +69,7 @@ pub enum Scheme {
 }
 
 /// Intepretation of the Hash160 bytes
-#[derive(PartialEq, Clone, Debug)]
+#[derive(PartialEq, Clone, Debug, Copy)]
 pub enum HashType {
     /// Public key hash
     Key,

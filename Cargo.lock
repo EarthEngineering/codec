@@ -188,12 +188,12 @@ dependencies = [
 
 [[package]]
 name = "earth_codec"
-version = "0.0.1"
+version = "0.1.0"
 dependencies = [
  "better-panic 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bitcoin_hashes 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "hex 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "keyphrase 0.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "keyphrase 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -277,7 +277,7 @@ dependencies = [
 
 [[package]]
 name = "keyphrase"
-version = "0.0.1"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "better-panic 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -686,7 +686,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum hermit-abi 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)" = "307c3c9f937f38e3534b1d6447ecf090cafcc9744e4a6360e8b037b2cf5af120"
 "checksum hex 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)" = "805026a5d0141ffc30abb3be3173848ad46a1b1664fe632428479619a3644d77"
 "checksum hmac 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)" = "5dcb5e64cda4c23119ab41ba960d1e170a774c8e4b9d9e6a9bc18aabf5e59695"
-"checksum keyphrase 0.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "1b12366a29136934535c936540adb46875b2b5ff69e3b2351f8e02b9db444278"
+"checksum keyphrase 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)" = "4bba6f1baa885733e76bb56d704d7d15347f1e3d0dca484cae390c0ad6e03487"
 "checksum lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 "checksum libc 0.2.65 (registry+https://github.com/rust-lang/crates.io-index)" = "1a31a0627fdf1f6a39ec0dd577e101440b7db22672c0901fe00a9a6fbb5c24e8"
 "checksum lock_api 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "62ebf1391f6acad60e5c8b43706dde4582df75c06698ab44511d15016bc2442c"

@@ -4,33 +4,35 @@ use keyphrase::{KeyPhrase, KeyPhraseType, Language, Seed};
 fn main() {
     better_panic::install();
 
-    let scheme: Scheme = Scheme::Gabriel;
-    let hash_type: HashType = HashType::Key;
-    let network: Network = Network::Main;
     let keyphrase = KeyPhrase::new(KeyPhraseType::Words12, Language::English);
-    let phrase: &str = keyphrase.phrase();
-    println!("KeyPhrase: {}", phrase);
 
-    // get the HD wallet seed
     let seed = Seed::new(&keyphrase, "");
-    println!("Root Seed: {:X}", seed);
-    println!("----------");
 
-    // first encode an Address
+    // Set hash_type to Key for all examples
+    let hash_type: HashType = HashType::Key;
+
+    // Set network to Main for all examples
+    let network: Network = Network::Regtest;
+
+    // Set scheme to Gabriel
+    let scheme: Scheme = Scheme::Earth;
+
     let body: Vec<u8> = seed.as_bytes().to_vec();
 
     let addr: Address = Address::new(body, scheme, hash_type, network);
-    println!("{:#?}", addr);
 
-    // Decode earth address
-    // let earth_address: &str = "earth:er6m7j9njldwwzlg9v7v53unlr4jkmx6qy59n5mv54";
+    let gabriel_address: String = addr.encode().unwrap();
+    println!("{:#?}", gabriel_address);
+    // gabriel:guq9e8eamzc5ewf3tvcsdtqdx26qnp
 
-    // let mut earth_addr: Address = Address::decode(earth_address).unwrap();
-    // println!("{:#?}", earth_addr);
+    // Set scheme to California
+    let scheme: Scheme = Scheme::California;
 
-    // Encode earth address
-    let earth_address: String = addr.encode().unwrap();
+    let body: Vec<u8> = seed.as_bytes().to_vec();
 
-    println!("{:#?}", earth_address);
-    // earth:qp78r5zdgr53xszxlycksftf95wcv5a8q5m7zvw2aq
+    let addr: Address = Address::new(body, scheme, hash_type, network);
+
+    let california_address: String = addr.encode().unwrap();
+    println!("{:#?}", california_address);
+    // california:cl7u0223yvhhslactcv8plvq0np
 }
