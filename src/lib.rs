@@ -3,6 +3,8 @@
 //! A simple library providing an `Address` struct enabling
 //! encoding/decoding of EARTH addresses.
 //!
+//! ## Quickstart
+//!
 //! ```rust
 //! use earth_codec::{Address, Network, Scheme};
 //!
@@ -79,7 +81,7 @@ pub enum HashType {
     Account,
 }
 
-/// Struct containing the bytes and metadata of a Bitcoin Cash address.
+/// Struct containing the bytes and metadata of an EARTH address.
 /// This is yeilded during decoding or consumed during encoding.
 #[derive(PartialEq, Clone, Debug)]
 pub struct Address {
